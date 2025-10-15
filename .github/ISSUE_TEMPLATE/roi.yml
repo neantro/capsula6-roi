@@ -1,0 +1,66 @@
+name: "ROI · Registro de Caso"
+description: "Preencha os campos para registrar o ROI do seu agente"
+title: "ROI: <Nome do Agente> — <Equipe/Área>"
+labels: ["roi", "capsula-6"]
+body:
+  - type: input
+    id: agente
+    attributes: { label: Nome do agente, placeholder: ex.: Assistente de Propostas (SalesOps) }
+    validations: { required: true }
+  - type: input
+    id: owner
+    attributes: { label: Responsável (owner), placeholder: ex.: Maria Silva (SalesOps) }
+    validations: { required: true }
+  - type: input
+    id: valor_hora
+    attributes: { label: Valor/hora (R$), placeholder: ex.: 70 }
+    validations: { required: true }
+  - type: input
+    id: tempo_baseline
+    attributes: { label: Tempo médio por tarefa — baseline (minutos), placeholder: ex.: 45 }
+    validations: { required: true }
+  - type: input
+    id: tempo_pos
+    attributes: { label: Tempo médio por tarefa — pós-agente (minutos), placeholder: ex.: 20 }
+    validations: { required: true }
+  - type: input
+    id: tarefas_mes
+    attributes: { label: Tarefas por mês, placeholder: ex.: 60 }
+    validations: { required: true }
+  - type: input
+    id: custo_licenca
+    attributes: { label: Custo mensal (licenças) — R$, placeholder: ex.: 200 }
+    validations: { required: true }
+  - type: input
+    id: custo_manutencao
+    attributes: { label: Custo mensal (manutenção) — R$, placeholder: ex.: 100 }
+    validations: { required: true }
+  - type: input
+    id: custo_setup
+    attributes: { label: Custo de setup (R$) — será amortizado, placeholder: ex.: 1500 }
+    validations: { required: true }
+  - type: input
+    id: taxa_erro_base
+    attributes: { label: Taxa de erro baseline (%), placeholder: ex.: 6 }
+    validations: { required: false }
+  - type: input
+    id: taxa_erro_pos
+    attributes: { label: Taxa de erro pós-agente (%), placeholder: ex.: 3 }
+    validations: { required: false }
+  - type: input
+    id: custo_erro
+    attributes: { label: Custo médio por erro (R$) — opcional, placeholder: ex.: 50 }
+    validations: { required: false }
+  - type: textarea
+    id: observacoes
+    attributes: { label: Observações, placeholder: Métrica de qualidade, riscos, supostos, etc. }
+    validations: { required: false }
+  - type: markdown
+    attributes:
+      value: |
+        **Como calcular (resumo):**
+        - Benefício (tempo) = (Tempo_baseline − Tempo_pós) × Tarefas/mês × Valor/hora ÷ 60
+        - Benefício (qualidade, opcional) = (Taxa_erro_base − Taxa_erro_pós) × Tarefas/mês × Custo_por_erro
+        - Benefício total = tempo + qualidade
+        - Custo mensal = licenças + manutenção + amortização(setup, 12 meses)
+        - ROI = (Benefício − Custo) ÷ Custo
