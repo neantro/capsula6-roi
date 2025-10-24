@@ -2,85 +2,86 @@ name: "ROI · Registro de Caso"
 description: "Registre os números do seu caso real (use os dados da planilha)."
 title: "ROI: <Nome do Agente> — <Equipe/Área>"
 labels: ["roi", "capsula-6"]
+
 body:
   - type: markdown
     attributes:
       value: |
         **Passo a passo**
-        1) Baixe e preencha a planilha de ROI da Cápsula 6  
-        2) Anote os resultados (Benefício, Custo, ROI, Payback)  
-        3) Preencha os campos abaixo e envie  
+        1) Baixe e preencha a planilha de ROI da Cápsula 6
+        2) Anote os resultados (Benefício, Custo, ROI, Payback)
+        3) Preencha os campos abaixo e envie
         4) (Opcional) Arraste um print da planilha para anexar na issue
 
   - type: input
     id: agente
     attributes:
-      label: Nome do agente
-      placeholder: ex.: Assistente de Propostas (SalesOps)
+      label: "Nome do agente"
+      placeholder: "Ex.: Assistente de Propostas (SalesOps)"
     validations:
       required: true
 
   - type: input
     id: owner
     attributes:
-      label: Responsável (owner)
-      placeholder: ex.: Maria Silva (SalesOps)
+      label: "Responsável (owner)"
+      placeholder: "Ex.: Maria Silva (SalesOps)"
     validations:
       required: true
 
   - type: input
     id: valor_hora
     attributes:
-      label: Valor/hora (R$)
-      placeholder: ex.: 70
+      label: "Valor/hora (R$)"
+      placeholder: "Ex.: 70"
     validations:
       required: true
 
   - type: input
     id: tempo_baseline
     attributes:
-      label: Tempo médio por tarefa — baseline (min)
-      placeholder: ex.: 45
+      label: "Tempo médio por tarefa — baseline (min)"
+      placeholder: "Ex.: 45"
     validations:
       required: true
 
   - type: input
     id: tempo_pos
     attributes:
-      label: Tempo médio por tarefa — pós-agente (min)
-      placeholder: ex.: 20
+      label: "Tempo médio por tarefa — pós-agente (min)"
+      placeholder: "Ex.: 20"
     validations:
       required: true
 
   - type: input
     id: tarefas_mes
     attributes:
-      label: Tarefas por mês
-      placeholder: ex.: 60
+      label: "Tarefas por mês"
+      placeholder: "Ex.: 60"
     validations:
       required: true
 
   - type: input
     id: custo_licenca
     attributes:
-      label: Custo mensal (licenças) — R$
-      placeholder: ex.: 200
+      label: "Custo mensal (licenças) — R$"
+      placeholder: "Ex.: 200"
     validations:
       required: true
 
   - type: input
     id: custo_manutencao
     attributes:
-      label: Custo mensal (manutenção) — R$
-      placeholder: ex.: 100
+      label: "Custo mensal (manutenção) — R$"
+      placeholder: "Ex.: 100"
     validations:
       required: true
 
   - type: input
     id: custo_setup
     attributes:
-      label: Custo de setup (R$) — amortizado em 12 meses
-      placeholder: ex.: 1500
+      label: "Custo de setup (R$) — amortizado em 12 meses"
+      placeholder: "Ex.: 1500"
     validations:
       required: true
 
@@ -88,37 +89,37 @@ body:
     attributes:
       value: |
         **(Opcional) Qualidade**
-        Se você mediu melhora de qualidade, preencha os campos abaixo e informe também o custo médio por erro.
+        Se você mediu melhora de qualidade, preencha também as taxas de erro e o custo médio por erro.
 
   - type: input
     id: taxa_erro_base
     attributes:
-      label: Taxa de erro baseline (%)
-      placeholder: ex.: 6
+      label: "Taxa de erro baseline (%)"
+      placeholder: "Ex.: 6"
     validations:
       required: false
 
   - type: input
     id: taxa_erro_pos
     attributes:
-      label: Taxa de erro pós-agente (%)
-      placeholder: ex.: 3
+      label: "Taxa de erro pós-agente (%)"
+      placeholder: "Ex.: 3"
     validations:
       required: false
 
   - type: input
     id: custo_erro
     attributes:
-      label: Custo médio por erro (R$)
-      placeholder: ex.: 50
+      label: "Custo médio por erro (R$)"
+      placeholder: "Ex.: 50"
     validations:
       required: false
 
   - type: textarea
     id: resultados_planilha
     attributes:
-      label: Resultados da planilha (copie e cole)
-      description: "Cole aqui os números que a planilha calculou: Benefício (tempo), Benefício (qualidade), Benefício total, Custo mensal, ROI, Payback."
+      label: "Resultados da planilha (copie e cole)"
+      description: "Benefício (tempo), Benefício (qualidade), Benefício total, Custo mensal, ROI, Payback."
       placeholder: |
         Benefício (tempo): R$ ...
         Benefício (qualidade): R$ ...
@@ -132,17 +133,17 @@ body:
   - type: textarea
     id: observacoes
     attributes:
-      label: Observações (links, anexos, riscos)
-      placeholder: Ex.: link para a planilha, print em anexo, riscos e supostos, etc.
+      label: "Observações (links, anexos, riscos)"
+      placeholder: "Ex.: link para a planilha, print em anexo, riscos e supostos, etc."
     validations:
       required: false
 
   - type: checkboxes
     id: consent
     attributes:
-      label: Publicação dos números no repositório
+      label: "Publicação dos números no repositório"
       options:
-        - label: Concordo em publicar estes dados (internos ao curso) no repositório do projeto.
+        - label: "Concordo em publicar estes dados (internos ao curso) no repositório do projeto."
           required: true
 
   - type: markdown
