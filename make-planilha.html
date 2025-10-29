@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Gerar ROI_Planilha_v2.xlsx</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- SheetJS (XLSX) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    body{font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:800px;margin:40px auto;padding:0 16px}
+    button{padding:10px 16px;border:1px solid #334155;border-radius:10px;cursor:pointer}
+    .ok{color:#059669;margin-left:8px}
+    code{background:#f1f5f9;padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <h1>Gerar planilha de ROI (v2)</h1>
+  <p>Este botão cria e baixa a planilha <code>ROI_Planilha_v2.xlsx</code> com campos de <strong>Entradas</strong>, <strong>Custos</strong>, <strong>Qualidade (opcional)</strong> e o <strong>Resumo automático</strong> (Benefícios, Custo, ROI, Payback).</p>
+  <button id="go">Baixar ROI_Planilha_v2.xlsx</button><span id="status"></span>
+
+<script>
+document.getElementById('go').addEventListener('click', () => {
+  /* Cria a worksheet "ROI" */
+  const A = (r,c)=>XLSX.utils.encode_cell({r,c});
+  const ws = {};
+
+  // Labels Entradas
+  ws[A(1,0)] = {v:"ENTRADAS"};
+  ws[A(2,0)] = {v:"Valor/hora (R$)"};
+  ws[A(3,0)] = {v:"Tempo médio por tarefa — baseline (min)"};
+  ws[A(4,0)] = {v:"Tempo médio por tarefa — pós-agente (min)"};
+  ws[A(5,0)] = {v:"Tarefas por mês"};
+
+  // Custos
+  ws[A(7,0)]  = {v:"Custo mensal (licenças) — R$"};
+  ws[A(8,0)]  = {v:"Custo mensal (manutenção) — R$"};
+  ws[A(9,0)]  = {v:"Custo de setup (R$) — amortizado em 12 meses"};
+
+  // Qualidade (opcional)
+  ws[A(11,0)] = {v:"(Opcional) Qualidade"};
+  ws[A(12,0)] = {v:"Taxa de erro baseline (%)"};
+  ws[A(13,0)] = {v:"Taxa de erro pós-agente (%)"};
+  ws[A(14,0)] = {v:"Custo médio por erro (R$)"};
+
+  // Resumo
+  ws[A(1,2)] = {v:"RESUMO (automático)"};
+  ws[A(2,2)] = {v:"Benefício (tempo) (R$)"};
+  ws[A(3,2)] = {v:"Benefício (qualidade) (R$)"};
+  ws[A(4,2)] = {v:"Benefício total (R$)"};
+  ws[A(5,2)] = {v:"Amortização do setup (R$/mês)"};
+  ws[A(6,2)] = {v:"Custo mensal (R$)"};
+  ws[A(7,2)] = {v:"ROI (%))"};
+  ws[A(8,2)] = {v:"Payback (meses)"};
+
+  // Fórmulas (usam referência estilo Excel; Excel localiza IF/SE sozinho ao abrir)
+  // Entradas na coluna B -> B3..B6; custos B8..B10; qualidade B13..B15
+  ws[A(2,3)] = {f:"((B4-B5)/60)*B6*B3"};        // D3 Benefício (tempo)
+  ws[A(3,3)] = {f:"(B13-B14)*B6*B15"};          // D4 Benefício (qualidade) (B13/B14 em %)
+  ws[A(4,3)] = {f:"D3+D4"};                     // D5 Benefício total
+  ws[A(5,3)] = {f:"B10/12"};                    // D6 Amortização do setup
+  ws[A(6,3)] = {f:"B8+B9+D6"};                  // D7 Custo mensal
+  ws[A(7,3)] = {f:'IF(D7=0,"",(D5-D7)/D7)'};    // D8 ROI
+  ws[A(8,3)] = {f:'IF(D5-D7<=0,"",B10/(D5-D7))'};// D9 Payback
+
+  // Área utilizada (A1:D20)
+  ws['!ref'] = "A1:D20";
+
+  // Larguras de coluna
+  ws['!cols'] = [{wch:48},{wch:20},{wch:36},{wch:22}];
+
+  // Segunda planilha "LEIA-ME"
+  const info = XLSX.utils.aoa_to_sheet([
+    ["Como usar esta planilha"],
+    [],
+    ["1) Preencha as células da coluna B na aba 'ROI': valor/hora, tempos (antes/depois), tarefas/mês, custos e (opcional) qualidade."],
+    ["2) O quadro 'RESUMO' (coluna D) calcula Benefícios, Custo, ROI e Payback automaticamente."],
+    ["3) Digite percentuais com % (ex.: 6%, 3%)."],
+    [],
+    ["Mapa planilha → formulário:"],
+    ["Valor/hora → Valor/hora (R$) | Tempo baseline → Tempo médio por tarefa — baseline (min) | Tempo pós-agente → Tempo médio por tarefa — pós-agente (min) | Tarefas/mês → Tarefas por mês"],
+    ["Licenças → Custo mensal (licenças) | Manutenção → Custo mensal (manutenção) | Setup → Custo de setup (R$) — amortizado em 12 meses"],
+    ["Qualidade: taxas de erro e custo por erro → campos de qualidade no formulário"]
+  ]);
+  info['!ref'] = "A1:A12"; info['!cols'] = [{wch:110}];
+
+  // Monta o workbook
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "ROI");
+  XLSX.utils.book_append_sheet(wb, info, "LEIA-ME");
+
+  // Gera e baixa o arquivo
+  const out = XLSX.write(wb, {bookType:"xlsx", type:"array"});
+  const blob = new Blob([out], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "ROI_Planilha_v2.xlsx";
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+
+  document.getElementById('status').textContent = "✓ gerado";
+  document.getElementById('status').className = "ok";
+});
+</script>
+</body>
+</html>
